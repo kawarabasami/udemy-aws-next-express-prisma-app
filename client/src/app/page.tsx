@@ -4,6 +4,7 @@ import Todo from "./components/Todo";
 import { TodoType } from "./types";
 import { useRef } from "react";
 import { useTodos } from "./hooks/useTodo";
+import { API_URL } from "@/constants/url";
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -13,7 +14,7 @@ export default function Home() {
     e.preventDefault();
     if (inputRef?.current == null) return;
 
-    const response = await fetch(`http://localhost:8080/createTodo`, {
+    const response = await fetch(`${API_URL}/createTodo`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
