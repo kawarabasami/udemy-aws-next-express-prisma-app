@@ -3,6 +3,7 @@
 import Todo from "./components/Todo";
 import useSWR from "swr";
 import { TodoType } from "./types";
+import { useRef } from "react";
 
 async function fetcher(key: string) {
   return fetch(key).then((res) => res.json());
@@ -10,12 +11,17 @@ async function fetcher(key: string) {
 
 export default function Home() {
   // const allTodos = await fetch("API", { cache: "no-store" });
+  const inputRef = useRef<HTMLInputElement|null>(null);
   const { data, isLoading, error } = useSWR(
     "http://localhost:8080/allTodos",
     fetcher
   );
 
-  console.log(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputRef == null) return;
+    console.log(inputRef.current?.value);
+  }
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4">
@@ -24,9 +30,10 @@ export default function Home() {
           To-Do List
         </h1>
       </div>
-      <form className="w-full max-w-sm mx-auto px-4 py-2">
+      <form className="w-full max-w-sm mx-auto px-4 py-2" onSubmit={handleSubmit}>
         <div className="flex items-center border-b-2 border-teal-500 py-2">
           <input
+            ref={inputRef}
             className="appearance-none bg-transparent
       border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight
       focus:outline-none"
