@@ -11,7 +11,7 @@ async function fetcher(key: string) {
 }
 
 export default function Home() {
-  const inputRef = useRef<HTMLInputElement|null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const { data, isLoading, error, mutate } = useSWR(
     "http://localhost:8080/allTodos",
     fetcher
@@ -20,19 +20,22 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inputRef?.current == null) return;
-    
+
     const response = await fetch(`http://localhost:8080/createTodo`, {
       method: "POST",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({title: inputRef.current?.value, isCompleted: false})
-    })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: inputRef.current?.value,
+        isCompleted: false,
+      }),
+    });
 
-    if(response.ok){
+    if (response.ok) {
       const newTodo = await response.json();
       mutate([...data, newTodo]);
-      inputRef.current.value="";
+      inputRef.current.value = "";
     }
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4">
@@ -41,7 +44,10 @@ export default function Home() {
           To-Do List
         </h1>
       </div>
-      <form className="w-full max-w-sm mx-auto px-4 py-2" onSubmit={handleSubmit}>
+      <form
+        className="w-full max-w-sm mx-auto px-4 py-2"
+        onSubmit={handleSubmit}
+      >
         <div className="flex items-center border-b-2 border-teal-500 py-2">
           <input
             ref={inputRef}
