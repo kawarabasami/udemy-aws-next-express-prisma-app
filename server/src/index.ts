@@ -33,7 +33,7 @@ app.put('/editTodo/:id', async (req, res) => {
   const { id } = req.params;
   const { title, isCompleted } = req.body;
   try {
-    const newTodo = await prisma.todo.update({
+    const todo = await prisma.todo.update({
       where: {
         id: Number(id)
       },
@@ -42,7 +42,22 @@ app.put('/editTodo/:id', async (req, res) => {
         isCompleted
       }
     });
-    return res.send(newTodo);
+    return res.send(todo);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json(e);
+  }
+});
+
+app.delete('/deleteTodo/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedTodo = await prisma.todo.delete({
+      where: {
+        id: Number(id)
+      }
+    });
+    return res.send(deletedTodo);
   } catch (e) {
     console.log(e);
     return res.status(400).json(e);
