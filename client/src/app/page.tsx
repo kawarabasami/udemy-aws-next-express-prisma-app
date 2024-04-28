@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Todo from "./components/Todo";
 import useSWR from "swr";
+import { TodoType } from "./types";
 
 async function fetcher(key: string) {
   return fetch(key).then((res) => res.json());
@@ -42,10 +42,9 @@ export default function Home() {
         </div>
       </form>
       <ul className="divide-y divide-gray-200 px-4">
-        <Todo />
-        <Todo />
-        <Todo />
-        <Todo />
+        {data?.map((todo: TodoType) => {
+          return <Todo key={todo.id} todo={todo} />;
+        })}
       </ul>
     </div>
   );
