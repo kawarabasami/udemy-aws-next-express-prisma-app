@@ -1,0 +1,7 @@
+POST http://localhost:8080/createTodo
+Content-Type: application/json
+
+{
+    "title": "AWSの勉強のTODO",
+    "isCompleted": true
+}
