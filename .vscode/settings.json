@@ -1,0 +1,19 @@
+{
+    "eslint.validate": [
+        "javascript"
+    ],
+    // コードフォーマッターとしてprettierを指定する。
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // ファイル保存時にコードフォーマッターが実行される。
+    "editor.formatOnSave": true,
+    // ファイル保存時にESLIntが実行される。
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+}
