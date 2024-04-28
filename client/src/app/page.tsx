@@ -4,23 +4,34 @@ import Todo from "./components/Todo";
 import useSWR from "swr";
 import { TodoType } from "./types";
 import { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 async function fetcher(key: string) {
   return fetch(key).then((res) => res.json());
 }
 
 export default function Home() {
-  // const allTodos = await fetch("API", { cache: "no-store" });
   const inputRef = useRef<HTMLInputElement|null>(null);
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error, mutate } = useSWR(
     "http://localhost:8080/allTodos",
     fetcher
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputRef == null) return;
-    console.log(inputRef.current?.value);
+    if (inputRef?.current == null) return;
+    
+    const response = await fetch(`http://localhost:8080/createTodo`, {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({title: inputRef.current?.value, isCompleted: false})
+    })
+
+    if(response.ok){
+      const newTodo = await response.json();
+      mutate([...data, newTodo]);
+      inputRef.current.value="";
+    }
   }
 
   return (
