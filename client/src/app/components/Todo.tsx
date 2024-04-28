@@ -10,7 +10,7 @@ function Todo({ todo }: TodoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
 
-  const { todos, mutate } = useTodos();
+  const { todos = [], mutate } = useTodos();
 
   const handleEdit = async () => {
     setIsEditing(!isEditing);
@@ -21,13 +21,37 @@ function Todo({ todo }: TodoProps) {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: editedTitle }),
+          body: JSON.stringify({
+            title: editedTitle,
+            isCompleted: false,
+          }),
         }
       );
-      mutate([...todos, await response.json()]);
-      setEditedTitle("");
+
+      if (response.ok) {
+        const editedTodo = await response.json();
+        const updatedTodos = todos.map((t) =>
+          t.id === editedTodo.id ? editedTodo : t
+        );
+        mutate([...updatedTodos]);
+        setEditedTitle("");
+      }
     }
   };
+
+  const handleDelete = async () => {
+    const response = await fetch(
+      `http://localhost:8080/deleteTodo/${todo.id}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const updatedTodos = todos.filter((t) => todo.id !== t.id);
+    mutate([...updatedTodos]);
+    setEditedTitle("");
+  };
+
   return (
     <li className="py-4">
       <div className="flex items-center justify-between">
@@ -59,7 +83,10 @@ function Todo({ todo }: TodoProps) {
           >
             {isEditing ? "Save" : "✒"}
           </button>
-          <button className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded">
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded"
+            onClick={handleDelete}
+          >
             ✖
           </button>
         </div>

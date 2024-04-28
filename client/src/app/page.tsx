@@ -7,7 +7,7 @@ import { useTodos } from "./hooks/useTodo";
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { todos, mutate } = useTodos();
+  const { todos = [], mutate } = useTodos();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
