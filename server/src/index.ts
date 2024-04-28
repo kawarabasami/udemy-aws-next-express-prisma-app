@@ -15,13 +15,38 @@ app.get('/allTodos', async (req, res) => {
 
 app.post('/createTodo', async (req, res) => {
   const { title, isCompleted } = req.body;
-  const newTodo = await prisma.todo.create({
-    data: {
-      title,
-      isCompleted
-    }
-  });
-  return res.send(newTodo);
+  try {
+    const newTodo = await prisma.todo.create({
+      data: {
+        title,
+        isCompleted
+      }
+    });
+    return res.send(newTodo);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json(e);
+  }
+});
+
+app.put('/editTodo/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, isCompleted } = req.body;
+  try {
+    const newTodo = await prisma.todo.update({
+      where: {
+        id: Number(id)
+      },
+      data: {
+        title,
+        isCompleted
+      }
+    });
+    return res.send(newTodo);
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json(e);
+  }
 });
 
 app.listen(PORT, () => {

@@ -1,0 +1,7 @@
+PUT http://localhost:8080/editTodo/1
+Content-Type: application/json
+
+{
+    "title": "散歩編集",
+    "isCompleted": true
+}
