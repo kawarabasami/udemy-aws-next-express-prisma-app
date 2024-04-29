@@ -96,7 +96,7 @@ const typeDefs = `#graphql
   }
   type Mutation {
     createTodo(input: CreateTodoInput): Todo
-    updateTodo(id: Int, input: UpdateTodoInput): Todo
+    editTodo(id: Int, input: EditTodoInput): Todo
     deleteTodo(id: Int): Todo
   }
 
@@ -104,22 +104,69 @@ const typeDefs = `#graphql
     title: String!
     isCompleted: Boolean
   }
-  input UpdateTodoInput {
+  input EditTodoInput {
     title: String!
     isCompleted: Boolean
   }
 `;
 
-const resolvers = {
-  Query: {
-    Todos: () => todos
-  }
-};
-
 const httpServer = http.createServer(app);
 const server = new ApolloServer<MyContext>({
   typeDefs,
-  resolvers,
+  resolvers: {
+    Query: {
+      Todos: async (parent: any, args: any, contextValue: any, info: any) => {
+        const allTodos = await prisma.todo.findMany();
+        return allTodos;
+      }
+    },
+    Mutation: {
+      createTodo: async (
+        parent: any,
+        args: any,
+        contextValue: any,
+        info: any
+      ) => {
+        const todo = await prisma.todo.create({
+          data: {
+            title: args.input.title,
+            isCompleted: args.input.isCompleted ?? false
+          }
+        });
+        return todo;
+      },
+      editTodo: async (
+        parent: any,
+        args: any,
+        contextValue: any,
+        info: any
+      ) => {
+        const todo = await prisma.todo.update({
+          where: {
+            id: args.id
+          },
+          data: {
+            title: args.input.title,
+            isCompleted: args.input.isCompleted
+          }
+        });
+        return todo;
+      },
+      deleteTodo: async (
+        parent: any,
+        args: any,
+        contextValue: any,
+        info: any
+      ) => {
+        const deletedTodo = await prisma.todo.delete({
+          where: {
+            id: args.id
+          }
+        });
+        return deletedTodo;
+      }
+    }
+  },
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
 });
 
