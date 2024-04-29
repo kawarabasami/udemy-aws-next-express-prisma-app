@@ -94,6 +94,20 @@ const typeDefs = `#graphql
   type Query {
     Todos: [Todo]
   }
+  type Mutation {
+    createTodo(input: CreateTodoInput): Todo
+    updateTodo(id: Int, input: UpdateTodoInput): Todo
+    deleteTodo(id: Int): Todo
+  }
+
+  input CreateTodoInput {
+    title: String!
+    isCompleted: Boolean
+  }
+  input UpdateTodoInput {
+    title: String!
+    isCompleted: Boolean
+  }
 `;
 
 const resolvers = {
