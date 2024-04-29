@@ -79,12 +79,6 @@ interface MyContext {
   token?: string;
 }
 
-const todos = [
-  { id: 1, title: 'Todo 1', isCompleted: false },
-  { id: 2, title: 'Todo 2', isCompleted: true },
-  { id: 3, title: 'Todo 3', isCompleted: false }
-];
-
 const typeDefs = `#graphql
   type Todo {
     id: Int

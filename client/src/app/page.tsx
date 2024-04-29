@@ -3,31 +3,25 @@
 import Todo from "./components/Todo";
 import { TodoType } from "./types";
 import { useRef } from "react";
-import { useTodos } from "./hooks/useTodo";
-import { API_URL } from "@/constants/url";
+import { useGetTodo } from "./hooks/graphql/useGetTodo";
+import { useCreateTodo } from "./hooks/graphql/useCreateTodo";
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { todos = [], mutate } = useTodos();
+  const { data: todos, refetch } = useGetTodo();
+  const [createTodo] = useCreateTodo();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inputRef?.current == null) return;
 
-    const response = await fetch(`${API_URL}/createTodo`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    createTodo({
+      variables: {
         title: inputRef.current?.value,
         isCompleted: false,
-      }),
+      },
+      onCompleted: () => refetch(),
     });
-
-    if (response.ok) {
-      const newTodo = await response.json();
-      mutate([...todos, newTodo]);
-      inputRef.current.value = "";
-    }
   };
 
   return (
