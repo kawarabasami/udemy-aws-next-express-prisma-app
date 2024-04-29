@@ -1,0 +1,51 @@
+
+
+POST http://localhost:4001/graphql HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+query getTodos {
+  Todos {
+    id
+    title
+    isCompleted
+  }
+}
+
+###
+POST http://localhost:4001/graphql HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation CreateTodo {
+  createTodo(
+    input: {
+    title: "graphql test",
+    isCompleted: false
+  }){
+    title
+    isCompleted
+  }
+}
+
+###
+POST http://localhost:4001/graphql HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation EditTodo {
+  editTodo(id: 17, input: {title: "ああああああああ", isCompleted: true}) {
+    id title isCompleted
+  }
+}
+
+###
+POST http://localhost:4001/graphql HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation DeleteTodo {
+  deleteTodo(id:17) {
+    id title
+  }
+}
